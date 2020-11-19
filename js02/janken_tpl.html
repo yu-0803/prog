@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<script src="js/jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="css/sample.css">
+
+
+
+</head>
+<body>
+
+<header>
+  <h1>サザエさんじゃんけん</h1>
+</header>
+
+<main>
+  <ul>
+    <li id="gu_btn"><img src="img/gu1-1.png" alt=""></li>
+    <li id="cho_btn"><img src="img/choki1-1.png" alt=""></li>
+    <li id="par_btn"><img src="img/par1-1.png" alt=""></li>
+  </ul>
+
+  <div class="youimg">
+    <div class="size">あなた</div><div class="size">サザエさん</div>
+  </div>
+
+
+  <div class="youimg">
+    <div id=you></div>
+    <h1 class="aa">vs</h1>
+    <div id="pc_hands"></div>
+  </div>
+
+
+  <div id="judgment" class="size">勝ち</div>
+  <div class="point">
+<div id="Point01">コンピュータの得点は：<span id="point_com">0</span></div> 
+    <div id="Point02">あなたの得点は：<span id="point_me">0</span></div> 
+
+    <button type="button" onclick="location.reload();">リセット</button><br>
+    <button type="button" onclick="location.href='file:///Users/iguchiyuu/Desktop/GGA/js01_haifu/kadai/quizgame/index.html'">サザエさんクイズに移動</button>
+  </div>
+</main>
+
+
+<footer></footer>
+
+<script>
+$("#gu_btn").on("click", function(){
+$("#you").html('<img src="img/ぐー.png">');
+});
+
+$("#cho_btn").on("click", function(){
+$("#you").html('<img src="img/チョキ.jpg">');
+});
+
+$("#par_btn").on("click", function(){
+$("#you").html('<img src="img/パー.jpg">');
+});
+
+</script>
+
+<script>
+//じゃんけん用のSCRIPTを書いてください
+
+
+
+let point_com = 0
+let point_me = 0
+
+
+$("#gu_btn").on("click",function(){
+
+const r = Math.ceil(Math.random()*3);
+
+if(r==1){
+  $("#pc_hands").html('<img src="img/サザエグー.jpg">');
+  }
+  if(r==2){
+  $("#pc_hands").html('<img src="img/サザエチョキ.jpg">');
+  }
+  if(r==3){
+  $("#pc_hands").html('<img src="img/サザエパー.jpg">');
+}
+if(r==1){
+  $("#judgment").html("あいこ");
+  }
+  if(r==2){
+  $("#judgment").html("勝ち");
+  }
+  if(r==3){
+  $("#judgment").html("負け");
+}
+if(r==3){
+    $("#point_com").html(++ point_com);
+  }
+if(r==2){
+    $("#point_me").html(++ point_me);
+  }
+});
+
+$("#cho_btn").on("click",function(){
+
+const r = Math.ceil(Math.random()*3);
+console.log(r);
+if(r==1){
+  $("#pc_hands").html('<img src="img/サザエグー.jpg">');
+  }
+  if(r==2){
+  $("#pc_hands").html('<img src="img/サザエチョキ.jpg">');
+  }
+  if(r==3){
+  $("#pc_hands").html('<img src="img/サザエパー.jpg">');
+}
+if(r==1){
+  $("#judgment").html("負け");
+  }
+  if(r==2){
+  $("#judgment").html("あいこ");
+  }
+  if(r==3){
+  $("#judgment").html("勝ち");
+}
+if(r==1){
+    $("#point_com").html(++ point_com);
+  }
+if(r==3){
+    $("#point_me").html(++ point_me);
+  }
+});
+
+$("#par_btn").on("click",function(){
+
+const r = Math.ceil(Math.random()*3);
+console.log(r);
+if(r==1){
+  $("#pc_hands").html('<img src="img/サザエグー.jpg">');
+  }
+  if(r==2){
+  $("#pc_hands").html('<img src="img/サザエチョキ.jpg">');
+  }
+  if(r==3){
+  $("#pc_hands").html('<img src="img/サザエパー.jpg">');
+}
+if(r==1){
+  $("#judgment").html("勝ち");
+  }
+  if(r==2){
+  $("#judgment").html("負け");
+  }
+  if(r==3){
+  $("#judgment").html("あいこ");
+}
+if(r==2){
+    $("#point_com").html(++ point_com);
+  }
+if(r==1){
+    $("#point_me").html(++ point_me);
+  }
+
+});
+
+
+
+
+
+</script>
+
+</body>
+</html>
