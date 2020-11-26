@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>myMemoPad</title>
+<script src="js/jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="css/sample.css">
+</head>
+<body background="img/medi_img.png">
+
+<header>
+<h1>メディカルチェック</h1>
+</header>
+<main>
+    <div class="date_center">
+    <input id="date" type="date" />
+    </div>
+    <p class="font">
+    体温：<select id="sel_box"></select>
+    </p>
+    <p>
+    名前：<input id="key" type="text">
+    </p>
+    <p>
+    体調：<select name="" id="memo">
+        <option>めちゃいい！！</option>
+        <option>まあまあいい！</option>
+        <option>普通</option>
+        <option>最悪・・</option>
+    </select>
+    </p>
+    <div class="btn_center">
+        <a href="#" class="btn-stitch" id="save">セーブ</a>
+        <a href="#" class="btn-stitch" id="clear">クリア</a>
+        <a href="#" class="btn-stitch" id="del_key" onclick="deleteTableRow();">1行削除</a>
+        
+    </div>
+    
+</main>
+<table id="list">
+<!-- ここに追加データが挿入される -->
+</table>
+<script>
+let box ="";
+for(let i = 35.0; i<39.9; i+=0.1){
+    let result = i.toFixed(1);
+    box +='<option value="'+result+'">'+result+'</option>';
+}
+$("#sel_box").html(box);
+
+
+//1.Save クリックイベント
+$("#save").on("click", function(){
+    const ls_key = $("#date").val();
+    const obj_sel = $("#sel_box").val();
+    const obj_key = $("#key").val();
+    const obj_val = $("#memo").val();//入力値取得
+    //{ obj_key : $("obj_key").val() , obj_val : $("#memo").val();}
+    const ls_obj = {obj_sel,obj_key,obj_val,};
+    const json_obj = JSON.stringify(ls_obj);
+    localStorage.setItem(ls_key , json_obj);
+    const h = '<tr><th>'+ls_key+'</th><td>'+obj_sel+'</td><td>'+obj_key+'</td><td>'+obj_val+'</td></tr>';
+    $("#list").append(h);
+    alert("OK");
+});
+
+
+
+
+
+//2.clear クリックイベント
+$("#clear").on("click", function(){
+    localStorage.clear();
+    $("#list").empty();
+    alert("clear");
+});
+
+function deleteTableRow() {
+    let table = document.getElementById('list');  //表のオブジェクトを取得
+    let row_num = table.rows.length;    //表の行数を取得
+    if (row_num>1) {
+        //表に二行以上あるとき末尾行を削除（見出し行は削除しない）
+        table.deleteRow(row_num - 1);   //末尾行を削除
+    }
+}
+$("#del_key").on("click", function(){
+    const key_len = localStorage.length;
+const key_name = localStorage.key(key_len - 1); 
+console.log(key_name);
+localStorage.removeItem(key_name);
+});
+
+
+
+
+//3.ページ読み込み：保存データ取得表示
+for(let i=0; i<localStorage.length; i++){
+    const ls_key = localStorage.key(i);
+    const ls_val = localStorage.getItem(ls_key);
+
+    const ls_list_val = JSON.parse(ls_val);
+    const h = '<tr><th>'+ls_key+'</th><td>'+ls_list_val.obj_sel+'</td><td>'+ls_list_val.obj_key+'</td><td>'+ls_list_val.obj_val+'</td></tr>';
+    $("#list").append(h);
+}
+
+
+
+
+
+
+</script>
+<footer><small>G's</small></footer>
+</body>
+</html>
