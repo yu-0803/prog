@@ -1,0 +1,126 @@
+body{
+    width: 980px;
+    font-size: large;
+}
+
+.date_center{
+    text-align: center;
+    margin-bottom: 50px;
+    
+}
+table{
+  text-align: center;
+  margin: 20px 3%;
+  border:1px solid #8dc3f5;
+  width:96%;
+  
+}
+th{
+  width:20%;
+  font-size:14px;
+  background-color:#d0e7fc;
+  border-bottom: 1px solid #8dc3f5;
+}
+td{
+  font-size:16px;
+  background-color:#d0e7fc;
+  border-bottom: 1px solid #8dc3f5;
+}
+
+.input_space{
+    text-align: center;
+    line-height: 50px;
+}
+
+#goukei{
+    margin-bottom: 50px;
+}
+/* ボタン */
+
+@import "https://use.fontawesome.com/releases/v5.13.0/css/all.css";
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+html {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+.btn,
+a.btn,
+button.btn {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  padding: 1rem 4rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 0.5rem;
+}
+
+.btn-wrap-pc-sp {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+
+  max-width: 435px;
+  margin: 0 auto 20px;
+
+  -webkit-box-pack: justify;
+
+  -ms-flex-pack: justify;
+
+  justify-content: space-between;
+}
+
+a.btn-pc-sp {
+  line-height: 1.4;
+
+  width: 49.5%;
+  padding: 1.25rem 0;
+
+  border-radius: 100vh;
+
+  color: #ffff;
+}
+
+a.btn-pc-sp--contact {
+  color: #fff;
+  background: #094;
+}
+
+a.btn-pc-sp--tel {
+  color: #fff;
+  background: #d20010;
+  
+}
+
+.fa-position-right {
+  position: absolute;
+  top: calc(50% - 0.5em);
+  right: 1rem;
+}
+
+/* テーブル */
+
+#output{
+
+}

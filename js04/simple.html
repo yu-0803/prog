@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="simple.css">
+<title>Chatアプリ</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js"></script>
+</head>
+<body>
+
+<!-- コンテンツ表示画面 -->
+<div>
+    <div class="date_center">
+    <input id="date" type="date" />
+    
+    <select name="example" id="uname" >
+      <option>user1</option>
+      <option>user2</option>
+      <option>user3</option>
+      <option>user4</option>
+      <option>user5</option>
+        </select>
+      </div>
+    <div>
+
+    </div>
+    <div class="input_space">
+    物件名：<textarea  id="property" cols="50" rows="1" ></textarea><br>
+    仲介手数料：<input type="text" id="fee"  maxlength="8" oninput="value = value.replace(/[^0-9]+/i,'');" /><br>
+    ＡＤ：<input type="text" id="ad"  maxlength="7" oninput="value = value.replace(/[^0-9]+/i,'');" /><br>
+    合計：<input type="text" id="goukei"><br>
+  
+  <div class="btn-wrap btn-wrap-pc-sp">
+    <a id="send" href="" class="btn btn-pc-sp btn-pc-sp--3 btn-pc-sp--contact">
+      送信
+      <i class="fas fa-angle-right fa-position-right"></i>
+    </a>
+    <a id="dele" href="" class="btn btn-pc-sp btn-pc-sp--3 btn-pc-sp--tel">
+      削除
+      <i class="fas fa-angle-right fa-position-right"></i>
+    </a>
+  </div>
+    
+    </div>
+    
+<table id="output" frame="vsides" border="1" >
+<th>日付</th>
+<td>名前</td>
+<td>物件名</td>
+<td>仲介手数料</td>
+<td>A D</td>
+<td> 合 計 </td>
+</table>
+
+    
+</div>
+
+<div id="stage"></div>
+
+
+
+
+
+<!--/ コンテンツ表示画面 -->
+
+
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase **-->
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBqVxwsXu7-9UEIi0lAeZ8rI138bs3fWIY",
+    authDomain: "unit01-bca96.firebaseapp.com",
+    projectId: "unit01-bca96",
+    storageBucket: "unit01-bca96.appspot.com",
+    messagingSenderId: "942224043753",
+    appId: "1:942224043753:web:2b04d1817f78054cd18a78"
+  };
+  // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const ref =firebase.database().ref();
+    const database = firebase.database();
+
+    //合計足し算
+    jQuery(function($){
+  $('input').keyup(function(){
+    var fee = $("#fee").val();
+    var ad = $("#ad").val();
+    //parseIntで文字列を数値に
+    fee = parseInt(fee);
+    ad = parseInt(ad);
+    //左側の入力値が数値では無い場合の処理
+    if(!fee){
+      //計算結果表示のinput内を削除
+      $("#goukei").val('');
+      return false;
+    };
+    //右側の入力値が数値では無い場合の処理
+    if(!ad){
+      //計算結果表示のinput内を削除
+      $("#goukei").val('');
+      return false;
+    };
+    $("#goukei").val(fee+ad);
+  });
+});
+
+
+
+
+    //送信イベント
+$("#send").on("click", function(){
+    const date = $("#date").val();
+    const uname = $("#uname").val();
+    const fee = $("#fee").val();
+    const property = $("#property").val();
+    const ad = $("#ad").val();
+    const goukei = $("#goukei").val();
+    
+
+    const msg = {
+        date: date,
+        uname: uname,
+        fee: fee,
+        property: property,
+        ad: ad,
+        goukei: goukei
+        
+
+    };
+    ref.push(msg);
+});
+
+
+//受信イベント
+ref.on("child_added",function(data){
+    const v = data.val();
+    const k = data.key;
+    const h = '<tr><th>'+v.date+'</th><td>'+v.uname+'</td><td>'+v.property+'</td><td>'+v.fee+'</td><td>'+v.ad+'</td><td>'+v.goukei+'</td></tr>';
+    $("#output").append(h);
+});
+
+
+//enterイベント
+
+
+$("#text").on("keydown",function(e){
+    if(e.keyCode == 13){
+    const uname = $("#uname").val();
+    const text = $("#text").val();
+    const msg = {
+        uname: uname,
+        text: text
+    };
+    ref.push(msg);
+
+    }
+
+});
+
+//削除イベント
+$("#dele").on("click",function(){
+  ref.remove();
+});
+
+
+
+//グラフ
+
+ref.on("child_added",function(e){
+
+    const v = e.val();
+    const k = e.key;
+let goukei = Number(v.goukei);
+
+var data = [
+  { label: "user1", y: goukei },
+  { label: "user2", y: 59 },
+  { label: "user3", y: 80 },
+  { label: "user4", y: 81 },
+  { label: "user5", y: 56 }
+];
+console.log(data)
+
+var stage = document.getElementById('stage');
+var chart = new CanvasJS.Chart(stage, {
+  title: {
+    text: "売上"  //グラフタイトル
+  },
+  theme: "theme4",  //テーマ設定
+  data: [{
+    type: 'column',  //グラフの種類
+    dataPoints: data  //表示するデータ
+  }]
+});
+chart.render();
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
