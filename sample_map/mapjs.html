@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+
+  <title>infobox show[one/Multiple]</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            
+        </style>
+
+  <title>ぐるなびAPI</title>
+</head>
+<body>
+
+<div id="title_center">
+<h1>MAP</h1>
+</div>
+
+<div class="box3">
+    <p id="geocode">geocode:data</p>
+</div>
+<div id="center">
+<a href="" class="btn btn-svg" id="reload">
+    <svg>
+    <rect x="2" y="2" rx="0" fill="none" width=200 height="50"></rect>
+    </svg>
+    <span>RESET</span>
+    </a>
+</div>
+<div id="dis">
+<div id="box">
+<div class="box-title">SAPPORO天気</div>
+<div id="weather"></div>
+</div>
+<div id="box2">
+<div id="myMap" style='width:1000px;height:780px;'></div>
+</div>
+​</div>
+<table id="table">
+    <tr>
+        <th id="number"></th>
+        <th>店 舗 名</th>
+        <th>ジャンル</th>
+        <th>平均予算</th>
+        <th>T E L</th>
+        <th>住  所</th>
+        
+    </tr>
+</table>
+
+<!-- MAP[END] -->
+
+<br>
+<!-- //ぐるなび表記 -->
+
+
+
+
+<script
+src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AnJFCP011WGm5GlJTNDIo7jTAEIjqJqOQ8oMwIRznGBJ3aVeE-UCFUuaVVDKbuYS'async defer></script>
+<script src="js/BmapQuery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+//****************************************************************************************
+            // BingMaps&BmapQuery
+            //****************************************************************************************
+            //Init
+            let map;
+            function GetMap() {
+                //------------------------------------------------------------------------
+                //1. Instance
+                //------------------------------------------------------------------------
+                map = new Bmap("#myMap");
+                
+                //------------------------------------------------------------------------
+                //2. Display Map
+                //   startMap(lat, lon, "MapType", Zoom[1~20]);
+                //   MapType:[load, aerial,canvasDark,canvasLight,birdseye,grayscale,streetside]
+                //--------------------------------------------------
+                
+                map.startMap(43.0611335, 141.3563703, "load", 15);
+                //----------------------------------------------------
+                //3. Geocode(2 patterns)
+                // getGeocode("searchQuery",callback);
+                //----------------------------------------------------
+                let lat;
+                let lon;
+                //B.Get geocode of click location
+                map.onGeocode("click", function (data2) {
+                    lat = data2.location.latitude; //Get latitude
+                    lon = data2.location.longitude; //Get longitude
+                    document.querySelector("#geocode").innerHTML ='緯度'+ lat + ',傾度' + lon;
+                
+                    // ＝＝＝＝＝＝ぐるなびAPI＝＝＝＝＝＝
+                    const data = {
+                        // keyid: $("#key").val(), //必須myid
+                        keyid: "cc00b1a822d72c1235c46616e6d853cc",
+                        latitude: lat,
+                        longitude: lon,
+                        range: 5, //範囲
+                        hit_per_page: 21
+                    };
+                    //Ajax（非同期通信）
+                    axios.get('https://api.gnavi.co.jp/RestSearchAPI/v3/', {
+                        params: data
+                    })
+                        .then(function (response) {
+                        //データ受信成功！！showData関数にデータを渡す
+                        showData(response.data);
+                    }).catch(function (error) {
+                        console.log(error); //通信Error
+                    }).then(function () {
+                        //console.log("Last");//通信OK/Error後に処理を必ずさせたい場合
+                    });
+                    function showData(data) {
+                        //データを繰り返し処理で取得
+                        const len = data.rest.length; //データ数を取得
+                        console.log("データの個数" + len);
+                        
+                        const options = [];
+                        for (let i = 0; i < len; i++) {
+                            $("#table").append('<tr><td>' + [i] + '</td><td>' + data.rest[i].name +'</td><td>' + data.rest[i].category + '</td><td>' + data.rest[i].budget +'</td><td>'+ data.rest[i].tel + '</td><td>' + data.rest[i].address + '</td></tr>');
+                            console.log(options);
+                            options[i] = {
+                                "lat": data.rest[i].latitude,
+                                "lon": data.rest[i].longitude,
+                                "title": data.rest[i].name,
+                                "pinColor": "#ff0000",
+                                "height": 300,
+                                "width": 320,
+                                "description": "<div><img src='"+data.rest[i].image_url.shop_image1+"'></div>",
+                                "show": false
+                            };
+                        };
+                        map.infoboxLayers(options, true);
+                    };
+                    
+                });
+            }
+            
+//天気表示
+                $(function() {
+    var API_KEY = 'abb50c217c03491a90bd46987c737d6c'
+    var city = 'Sapporo';
+    var url = 'http://api.openweathermap.org/data/2.5/forecast?q=' + city + ',jp&units=metric&APPID=' + API_KEY;
+    $.ajax({
+        url: url,
+        dataType: "json",
+        type: 'GET',
+    })
+    .done(function(data) {
+        var insertHTML = "";
+        var cityName = '<h2>' + data.city.name + '</h2>';
+        $('#city-name').html(cityName);
+        for (var i = 0; i <= 8; i = i + 2) {
+        insertHTML += buildHTML(data, i);
+        }
+        $('#weather').html(insertHTML);
+    })
+    .fail(function(data) {
+        console.log("失敗しました");
+    });
+    });
+    function buildHTML(data, i) {
+    var Week = new Array("（日）","（月）","（火）","（水）","（木）","（金）","（土）");
+    var date = new Date (data.list[i].dt_txt);
+    date.setHours(date.getHours() + 9);
+    var month = date.getMonth()+1;
+    var day = month + "月" + date.getDate() + "日" + Week[date.getDay()] +'<br>'+ date.getHours() + "：00";
+    var icon = data.list[i].weather[0].icon;
+    var html =
+    '<div class="weather-report">' +
+        '<img src="http://openweathermap.org/img/w/' + icon + '.png">' +
+        '<div class="weather-date">' + day + '</div>' +
+        '<div class="weather-main">'+ data.list[i].weather[0].main + '</div>' +
+        '<div class="weather-temp">' + Math.round(data.list[i].main.temp) + '℃</div>' +
+    '</div>';
+    return html
+    }
+    $("#reload").on("click",function(){
+    location.reload();
+});
+</script>
+</body>
+</html>
